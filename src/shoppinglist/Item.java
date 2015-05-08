@@ -30,7 +30,11 @@ public class Item {
 		this.quantity = quantity;
 	}
 	public String toString() {
-		return "   -" + itemName + " (" + quantity + ")";
+		if (!quantity.isEmpty()) {
+			String q = quantity;
+			return "\n   - " + itemName + " (" + q + ")";
+		}
+		return "\n   - " + itemName;
 	}
 	
 	@Override
