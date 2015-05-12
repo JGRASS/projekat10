@@ -434,4 +434,36 @@ public class MainWindowGUI extends JFrame {
 		return other;
 	}
 	
+//	JMenuItem mntmSave = new JMenuItem("Save");
+//	mntmSave.addActionListener(new ActionListener() {
+//		public void actionPerformed(ActionEvent o) {
+//			try {
+//				ObjectOutputStream out = new ObjectOutputStream(
+//						new BufferedOutputStream(new FileOutputStream("files/shoppinglist.out")));
+//
+//				JFileChooser fc = new JFileChooser();
+//				int opcija = fc.showSaveDialog(contentPane);
+//
+//				if (opcija == JFileChooser.APPROVE_OPTION) {
+//					File f = fc.getSelectedFile();
+////					textAreaShoppingList.append(f.getAbsolutePath());
+//					system.saveFile(f.getAbsolutePath());
+//				}					
+//				
+//				out.writeObject(shoppingList);
+//				out.close();
+//				
+//			} catch (IOException e) {
+//				JOptionPane.showMessageDialog(contentPane, e.getMessage(), 
+//						"Error", JOptionPane.ERROR_MESSAGE);
+//			}
+//
+//		}
+//	});
+//	mnFile.add(mntmSave);
+//
+
+//PREBACENO DUGME NA DNO
+	
+	
 }
