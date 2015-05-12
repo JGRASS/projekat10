@@ -6,10 +6,10 @@ public class Item {
 	private String category;
 	private String quantity;
 	
-	public Item (String itemName, String category) {
-		this.category = category;
-		this.itemName = itemName;
-	}
+//	public Item (String itemName, String category) {
+//		this.category = category;
+//		this.itemName = itemName;
+//	}
 	
 	public String getItemName() {
 		return itemName;

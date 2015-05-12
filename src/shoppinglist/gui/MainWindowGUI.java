@@ -35,25 +35,95 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Toolkit;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @SuppressWarnings("serial")
 public class MainWindowGUI extends JFrame {
 
-	private JPanel contentPane;
+	private static JPanel contentPane;
 	private JTextField textFieldNewItem;
 	private JTextField textFieldQuantity;
 
-	private LinkedList<Item> food = new LinkedList<Item>();
-	private LinkedList<Item> drinks = new LinkedList<Item>();
-	private LinkedList<Item> hygiene = new LinkedList<Item>();
-	private LinkedList<Item> other = new LinkedList<Item>();
+	final static JTextArea textAreaShoppingList = new JTextArea();
 
-	String foodS = "";
-	String drinksS = "";
-	String hygieneS = "";
-	String otherS = "";
+	public static JTextArea getTextAreaShoppingList() {
+		return textAreaShoppingList;
+	}
+	
+	public static void setTextAreaShoppingList(String textArea) {
+		textAreaShoppingList.setText(textArea);
+	}
+	
+	public static LinkedList<Item> getFood() {
+		return food;
+	}
+	public static void setFood(LinkedList<Item> food) {
+		MainWindowGUI.food = food;
+	}
+	public static LinkedList<Item> getDrinks() {
+		return drinks;
+	}
+	public static void setDrinks(LinkedList<Item> drinks) {
+		MainWindowGUI.drinks = drinks;
+	}
+	public static LinkedList<Item> getHygiene() {
+		return hygiene;
+	}
+	public static void setHygiene(LinkedList<Item> hygiene) {
+		MainWindowGUI.hygiene = hygiene;
+	}
+	public static LinkedList<Item> getOther() {
+		return other;
+	}
+	public static void setOther(LinkedList<Item> other) {
+		MainWindowGUI.other = other;
+	}
 
+	private static LinkedList<Item> food = new LinkedList<Item>();
+	private static LinkedList<Item> drinks = new LinkedList<Item>();
+	private static LinkedList<Item> hygiene = new LinkedList<Item>();
+	private static LinkedList<Item> other = new LinkedList<Item>();
+
+	static String foodS = "";
+	static String drinksS = "";
+	static String hygieneS = "";
+	static String otherS = "";
+
+	public static String getFoodS() {
+		return foodS;
+	}
+
+	public static void setFoodS(String f) {
+		foodS = f;
+	}
+
+	public static String getDrinksS() {
+		return drinksS;
+	}
+
+	public static void setDrinksS(String d) {
+		drinksS = d;
+	}
+
+	public static String getHygieneS() {
+		return hygieneS;
+	}
+
+	public static void setHygieneS(String h) {
+		hygieneS = h;
+	}
+
+	public static String getOtherS() {
+		return otherS;
+	}
+
+	public static void setOtherS(String o) {
+		otherS = o;
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -74,9 +144,15 @@ public class MainWindowGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindowGUI() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindowGUI.class.getResource("/icons/shopping bag.jpg")));
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				closeApp();
+			}
+		});
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindowGUI.class.getResource("/icons/female-s-hand-holding-colorful-shopping-bags-10947846.jpg")));
 		setTitle("SHOPen");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 386);
 
 		setLocationRelativeTo(null);
@@ -86,14 +162,36 @@ public class MainWindowGUI extends JFrame {
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
+		
+		JMenuItem mntmNew = new JMenuItem("New");
+		mntmNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				save();
+				food.remove();
+				drinks.remove();
+				other.remove();
+				hygiene.remove();
+			}
+		});
+		mnFile.add(mntmNew);
 
 		JMenuItem mntmOpen = new JMenuItem("Open");
 		mnFile.add(mntmOpen);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				save();
+			}
+		});
 		mnFile.add(mntmSave);
 
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				closeApp();
+			}
+		});
 		mnFile.add(mntmExit);
 
 		JMenu mnOptions = new JMenu("Options");
@@ -104,9 +202,6 @@ public class MainWindowGUI extends JFrame {
 
 		JMenuItem mntmCombine = new JMenuItem("Combine");
 		mnOptions.add(mntmCombine);
-
-		JMenuItem mntmRecepies = new JMenuItem("Recepies");
-		mnOptions.add(mntmRecepies);
 
 		JMenuItem mntmTranferCategory = new JMenuItem("Tranfer category");
 		mnOptions.add(mntmTranferCategory);
@@ -119,9 +214,10 @@ public class MainWindowGUI extends JFrame {
 
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent o) {
 				JOptionPane.showMessageDialog(contentPane,
-						"Version 1.0    Authors: Sanja Zelenovic, Milena Djurdjic, Nevena Djuricic", "About", JOptionPane.INFORMATION_MESSAGE);
+					"Version 1.0 \nAuthors: \n  Sanja Zelenovic, \n  Milena Djurdjic, \n  Nevena Djuricic", 
+					"About", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		mnHelp.add(mntmAbout);
@@ -152,7 +248,7 @@ public class MainWindowGUI extends JFrame {
 
 		final JComboBox<String> comboBoxItemCategory = new JComboBox<String>();
 
-		comboBoxItemCategory.setModel(new DefaultComboBoxModel<String>(new String[] {"Food", "Drinks", "Hygiene", "Other"}));
+		comboBoxItemCategory.setModel(new DefaultComboBoxModel(new String[] {"- select category -", "Food", "Drinks", "Hygiene", "Other"}));
 		panelNewItems.add(comboBoxItemCategory, "cell 0 5 2 1,growx");
 
 		JLabel lblQuantity = new JLabel("Quantity");
@@ -161,7 +257,6 @@ public class MainWindowGUI extends JFrame {
 		JScrollPane scrollPaneShoppingList = new JScrollPane();
 		contentPane.add(scrollPaneShoppingList, "cell 1 1 3 1,grow");
 
-		final JTextArea textAreaShoppingList = new JTextArea();
 		textAreaShoppingList.setEditable(false);
 		scrollPaneShoppingList.setViewportView(textAreaShoppingList);
 
@@ -171,19 +266,40 @@ public class MainWindowGUI extends JFrame {
 		panelButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				
+				save();
+			}
+		});
 		panelButtons.add(btnSave);
 
 		JButton btnEdit = new JButton("Edit");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				new EditGUI().setVisible(true);
+			}
+		});
 		panelButtons.add(btnEdit);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				closeApp();
+			}
+		});
+		panelButtons.add(btnExit);
 
 		JButton btnAddToList = new JButton("Add to list");
 		btnAddToList.addActionListener(new ActionListener() {
 			@SuppressWarnings("resource")
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					ObjectOutputStream out = new ObjectOutputStream(
-							new BufferedOutputStream(new FileOutputStream("shoppinglist.out")));
-
+					if(comboBoxItemCategory.getSelectedItem().equals("- select category -")) {
+						JOptionPane.showInternalMessageDialog(contentPane, "You have to select a category!",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+					
 					// ucitavanje iz polja za unos
 					String item = textFieldNewItem.getText();
 					String category = comboBoxItemCategory.getSelectedItem().toString();
@@ -197,13 +313,15 @@ public class MainWindowGUI extends JFrame {
 					}
 
 					// pravljenje novog objekta Item
-					Item newItem = new Item(item, category);
+					Item newItem = new Item();
+					newItem.setCategory(category);
+					newItem.setItemName(item);
 					newItem.setQuantity(quantity);
 
 					// unos u Shopping listu
 
-					String newLine = "";
-
+					String newLine = ""; 
+					
 					if(comboBoxItemCategory.getSelectedItem().equals("Food")) {
 						food.add(newItem);
 
@@ -254,15 +372,12 @@ public class MainWindowGUI extends JFrame {
 							else
 								otherS += newItem.toString();
 					}
-
+					
 					textAreaShoppingList.setText(foodS + drinksS + hygieneS + otherS);
-
-					out.writeObject(newItem);
 					
 					textFieldNewItem.setText("");
 					textFieldQuantity.setText("");
 					
-					out.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -275,4 +390,48 @@ public class MainWindowGUI extends JFrame {
 		panelNewItems.add(btnAddToList, "cell 0 9 2 1,growx,aligny bottom");
 	}
 
+	public void save() {
+		int option = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your shopping list?",
+				"Save", JOptionPane.YES_NO_CANCEL_OPTION);
+		if(option == JOptionPane.YES_OPTION) {
+			try {
+				ObjectOutputStream out = new ObjectOutputStream(
+						new BufferedOutputStream(new FileOutputStream("data/shoppinglist.out")));
+				out.writeObject(food);
+				out.writeObject(drinks);
+				out.writeObject(hygiene);
+				out.writeObject(other);
+				out.close();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(contentPane, "Error: " + e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	public static void closeApp() {
+		
+		int option = JOptionPane.showConfirmDialog(contentPane, "Do you really want to exit? REALLY?!",
+				"Exit", JOptionPane.YES_NO_CANCEL_OPTION);
+		if(option == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+	
+	public static LinkedList<Item> showFood() {
+		return food;
+	}
+	
+	public static LinkedList<Item> showDrinks() {
+		return drinks;
+	}
+	
+	public static LinkedList<Item> showHygiene() {
+		return hygiene;
+	}
+	
+	public static LinkedList<Item> showOther() {
+		return other;
+	}
+	
 }
