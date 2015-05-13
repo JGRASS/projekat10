@@ -6,29 +6,30 @@ public class Item {
 	private String category;
 	private String quantity;
 	
-//	public Item (String itemName, String category) {
-//		this.category = category;
-//		this.itemName = itemName;
-//	}
-	
 	public String getItemName() {
 		return itemName;
 	}
+	
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
+	
 	public String getCategory() {
 		return category;
 	}
+	
 	public void setCategory(String category) {
 		this.category = category;
 	}
+	
 	public String getQuantity() {
 		return quantity;
 	}
+	
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
+	
 	public String toString() {
 		if (!quantity.isEmpty()) {
 			String q = quantity;

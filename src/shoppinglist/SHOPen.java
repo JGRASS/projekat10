@@ -10,7 +10,15 @@ import java.util.LinkedList;
 
 public class SHOPen implements SHOPenInterfejs {
 
-	LinkedList<Item> shoppingList = new LinkedList<Item>();
+	private static LinkedList<Item> shoppingList = new LinkedList<Item>();
+	
+	public static LinkedList<Item> getShoppingList() {
+		return shoppingList;
+	}
+
+	public static void setShoppingList(LinkedList<Item> shop) {
+		shoppingList = shop;
+	}
 	
 	public void addToList(Item item) {
 		if (item == null)
@@ -22,7 +30,7 @@ public class SHOPen implements SHOPenInterfejs {
 		shoppingList.add(item);
 	}
 
-	public void deleteItem(Item item) { // dodati u edit gui-ju
+	public void deleteItem(Item item) {
 		if (!shoppingList.contains(item))
 			throw new RuntimeException("Item does not exist in the list");
 		
@@ -30,6 +38,20 @@ public class SHOPen implements SHOPenInterfejs {
 	}
 
 	public void changeQuantity(Item item, String newQuantity) {
+		if (item == null)
+			throw new RuntimeException("Item can't be null");
+		
+		if (newQuantity == null)
+			throw new RuntimeException("Quantity can't be null");
+		
+		if (!shoppingList.contains(item))
+			throw new RuntimeException("Item does not exist in the list");
+		
+		for (int i = 0; i < shoppingList.size(); i++) {
+			if (shoppingList.get(i).equals(item)) {
+				shoppingList.get(i).setQuantity(newQuantity);
+			}
+		}
 		
 	}
 

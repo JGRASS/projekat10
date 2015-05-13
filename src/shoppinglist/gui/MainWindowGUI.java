@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -24,6 +25,8 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 
 import shoppinglist.Item;
+import shoppinglist.SHOPen;
+import shoppinglist.SHOPenInterfejs;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -34,8 +37,8 @@ import javax.swing.DefaultComboBoxModel;
 
 import java.awt.Toolkit;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -46,56 +49,44 @@ public class MainWindowGUI extends JFrame {
 	private static JPanel contentPane;
 	private JTextField textFieldNewItem;
 	private JTextField textFieldQuantity;
-
-	final static JTextArea textAreaShoppingList = new JTextArea();
-
-	public static JTextArea getTextAreaShoppingList() {
-		return textAreaShoppingList;
-	}
-	
-	public static void setTextAreaShoppingList(String textArea) {
-		textAreaShoppingList.setText(textArea);
-	}
-	
-	public static LinkedList<Item> getFood() {
-		return food;
-	}
-	public static void setFood(LinkedList<Item> food) {
-		MainWindowGUI.food = food;
-	}
-	public static LinkedList<Item> getDrinks() {
-		return drinks;
-	}
-	public static void setDrinks(LinkedList<Item> drinks) {
-		MainWindowGUI.drinks = drinks;
-	}
-	public static LinkedList<Item> getHygiene() {
-		return hygiene;
-	}
-	public static void setHygiene(LinkedList<Item> hygiene) {
-		MainWindowGUI.hygiene = hygiene;
-	}
-	public static LinkedList<Item> getOther() {
-		return other;
-	}
-	public static void setOther(LinkedList<Item> other) {
-		MainWindowGUI.other = other;
-	}
+	private SHOPenInterfejs system;
 
 	private static LinkedList<Item> food = new LinkedList<Item>();
 	private static LinkedList<Item> drinks = new LinkedList<Item>();
 	private static LinkedList<Item> hygiene = new LinkedList<Item>();
-	private static LinkedList<Item> other = new LinkedList<Item>();
+	//	private static LinkedList<Item> other = new LinkedList<Item>();
 
 	static String foodS = "";
 	static String drinksS = "";
 	static String hygieneS = "";
-	static String otherS = "";
+	//	static String otherS = "";
+	
+	final static JTextArea textAreaShoppingList = new JTextArea();
+
+	public static void setTextAreaShoppingList(String textArea) {
+		textAreaShoppingList.setText(textArea);
+	}
+
+	public static void setFood(LinkedList<Item> food) {
+		MainWindowGUI.food = food;
+	}
+
+	public static void setDrinks(LinkedList<Item> drinks) {
+		MainWindowGUI.drinks = drinks;
+	}
+
+	public static void setHygiene(LinkedList<Item> hygiene) {
+		MainWindowGUI.hygiene = hygiene;
+	}
+	
+	//	public static void setOther(LinkedList<Item> other) {
+	//		MainWindowGUI.other = other;
+	//	}
 
 	public static String getFoodS() {
 		return foodS;
 	}
-
+	
 	public static void setFoodS(String f) {
 		foodS = f;
 	}
@@ -116,14 +107,14 @@ public class MainWindowGUI extends JFrame {
 		hygieneS = h;
 	}
 
-	public static String getOtherS() {
-		return otherS;
-	}
+	//	public static String getOtherS() {
+	//		return otherS;
+	//	}
+	//
+	//	public static void setOtherS(String o) {
+	//		otherS = o;
+	//	}
 
-	public static void setOtherS(String o) {
-		otherS = o;
-	}
-	
 	/**
 	 * Launch the application.
 	 */
@@ -143,6 +134,7 @@ public class MainWindowGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MainWindowGUI() {
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -150,7 +142,7 @@ public class MainWindowGUI extends JFrame {
 				closeApp();
 			}
 		});
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindowGUI.class.getResource("/icons/female-s-hand-holding-colorful-shopping-bags-10947846.jpg")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindowGUI.class.getResource("/icons/shopping-bag-definition.jpg")));
 		setTitle("SHOPen");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 386);
@@ -162,20 +154,61 @@ public class MainWindowGUI extends JFrame {
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
-		
+
 		JMenuItem mntmNew = new JMenuItem("New");
 		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				save();
-				food.remove();
-				drinks.remove();
-				other.remove();
-				hygiene.remove();
+			public void actionPerformed(ActionEvent o) {
+				/*
+				 * kada kliknemo na new pita nas da li da sacuvamo listu koju smo do sad pravili, ako izaberemo yes onda pokrece
+				 * metodu save, ako izaberemo no otvara se nova lista
+				 */
+				int opt = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your list before you open new?",
+						"Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+				if(opt == JOptionPane.YES_OPTION) {
+					save();
+				}
+				/*
+				 * "otvara" se nova lista, odnosno brise se sve sto smo upisivali u liste ukoliko vec nisu bile prazne
+				 */
+				if(!food.isEmpty()){
+					food.remove();
+					foodS = "";
+				}
+				if(!drinks.isEmpty()) {
+					drinks.remove();
+					drinksS = "";
+				}
+				//				if(!other.isEmpty()) {
+				//					other.remove();
+				//					otherS = "";
+				//				}
+				if(!hygiene.isEmpty()) {
+					hygiene.remove();
+					hygieneS = "";
+				}
+
+				textAreaShoppingList.setText("");
+				if (!SHOPen.getShoppingList().isEmpty())
+					SHOPen.setShoppingList(null);
 			}
 		});
 		mnFile.add(mntmNew);
 
 		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+
+				JFileChooser jf = new JFileChooser();
+				int opcija = jf.showOpenDialog(contentPane);
+
+				if (opcija == JFileChooser.APPROVE_OPTION) {
+					File f = jf.getSelectedFile();
+					textAreaShoppingList.append("\n" + f.getAbsolutePath());
+					system.readFile(f.getAbsolutePath());
+				}
+				// dodati deserijalizaciju
+			}
+		});
 		mnFile.add(mntmOpen);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
@@ -216,8 +249,8 @@ public class MainWindowGUI extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
 				JOptionPane.showMessageDialog(contentPane,
-					"Version 1.0 \nAuthors: \n  Sanja Zelenovic, \n  Milena Djurdjic, \n  Nevena Djuricic", 
-					"About", JOptionPane.INFORMATION_MESSAGE);
+						"Version 1.0 \nAuthors: \n  Sanja Zelenovic, \n  Milena Djurdjic, \n  Nevena Djuricic", 
+						"About", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		mnHelp.add(mntmAbout);
@@ -246,7 +279,7 @@ public class MainWindowGUI extends JFrame {
 		JLabel lblItemCategory = new JLabel("Item category");
 		panelNewItems.add(lblItemCategory, "cell 0 4 2 1,alignx left,aligny center");
 
-		final JComboBox<String> comboBoxItemCategory = new JComboBox<String>();
+		final JComboBox comboBoxItemCategory = new JComboBox<>();
 
 		comboBoxItemCategory.setModel(new DefaultComboBoxModel(new String[] {"- select category -", "Food", "Drinks", "Hygiene", "Other"}));
 		panelNewItems.add(comboBoxItemCategory, "cell 0 5 2 1,growx");
@@ -268,7 +301,6 @@ public class MainWindowGUI extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				
 				save();
 			}
 		});
@@ -277,11 +309,17 @@ public class MainWindowGUI extends JFrame {
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				new EditGUI().setVisible(true);
+				if( !(textAreaShoppingList.getText().isEmpty()) ) {
+					new EditGUI().setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(contentPane, "Error: You have to add an item in order to change it!",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+
 			}
 		});
 		panelButtons.add(btnEdit);
-		
+
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
@@ -292,14 +330,13 @@ public class MainWindowGUI extends JFrame {
 
 		JButton btnAddToList = new JButton("Add to list");
 		btnAddToList.addActionListener(new ActionListener() {
-			@SuppressWarnings("resource")
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if(comboBoxItemCategory.getSelectedItem().equals("- select category -")) {
-						JOptionPane.showInternalMessageDialog(contentPane, "You have to select a category!",
+						JOptionPane.showMessageDialog(contentPane, "You have to select a category!",
 								"Error", JOptionPane.ERROR_MESSAGE);
 					}
-					
+
 					// ucitavanje iz polja za unos
 					String item = textFieldNewItem.getText();
 					String category = comboBoxItemCategory.getSelectedItem().toString();
@@ -321,63 +358,87 @@ public class MainWindowGUI extends JFrame {
 					// unos u Shopping listu
 
 					String newLine = ""; 
-					
-					if(comboBoxItemCategory.getSelectedItem().equals("Food")) {
-						food.add(newItem);
 
-						if (food.size() == 1) {
-							if (!textAreaShoppingList.getText().equals(""))
-								newLine = "\n";
-
-							foodS = newLine + "Food" + newItem.toString();
-						} else
-							foodS += newItem.toString();
-					}
-
+					/*
+					 * ako je jedini objekat u listi ovaj koji smo sad dodali onda to znaci da je lista pre bila prazna
+					 * pa nam treba da se ta nova lista pojavi u sledecem redu
+					 */
 					if(comboBoxItemCategory.getSelectedItem().equals("Drinks")) {
-						drinks.add(newItem);
+//						if(!drinks.contains(newItem)) {
+							drinks.add(newItem);
 
-						if (drinks.size() == 1) {
-							if (!textAreaShoppingList.getText().equals(""))
-								newLine = "\n";
+							if (drinks.size() == 1) {
+								if (!textAreaShoppingList.getText().equals("")) {
+									newLine = "\n";
+								}
 
-							drinksS = newLine + "Drinks" + newItem.toString();
-						}
-						else
-							drinksS += newItem.toString();
-					}
-
-					if(comboBoxItemCategory.getSelectedItem().equals("Hygiene")) {
-						hygiene.add(newItem);
-
-						if (hygiene.size() == 1) {
-							if (!textAreaShoppingList.getText().equals(""))
-								newLine = "\n";
-
-							hygieneS = newLine + "Hygiene" + newItem.toString();
-						}
-						else
-							hygieneS += newItem.toString();
-					}
-
-					if(comboBoxItemCategory.getSelectedItem().equals("Other")) {
-						other.add(newItem);
-
-						if (other.size() == 1)
-							if (!textAreaShoppingList.getText().equals("")) {
-								newLine = "\n";
-
-								otherS = newLine + "Other" + newItem.toString();
+								drinksS =  newLine + "Drinks" + newItem.toString();
 							}
 							else
-								otherS += newItem.toString();
-					}
-					
-					textAreaShoppingList.setText(foodS + drinksS + hygieneS + otherS);
-					
+								drinksS += newItem.toString();
+						}
+//					} else {
+//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
+//								"Error", JOptionPane.ERROR_MESSAGE);
+//					}
+
+					if(comboBoxItemCategory.getSelectedItem().equals("Food")) {
+//						if(!food.contains(newItem)) {
+							food.add(newItem);
+
+							if (food.size() == 1) {
+								if (!textAreaShoppingList.getText().equals("")){
+									newLine = "\n";
+								}
+
+								foodS = newLine + "Food" + newItem.toString();
+							} else
+								foodS += newItem.toString();
+						}
+//					} else {
+//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
+//								"Error", JOptionPane.ERROR_MESSAGE);
+//					}
+
+
+					if(comboBoxItemCategory.getSelectedItem().equals("Hygiene")) {
+//						if(!hygiene.contains(newItem)) {
+							hygiene.add(newItem);
+
+							if (hygiene.size() == 1) {
+								if (!textAreaShoppingList.getText().equals("")) {
+									newLine = "\n";
+								}
+
+								hygieneS = newLine + "Hygiene" + newItem.toString();
+							}
+							else
+								hygieneS += newItem.toString();
+						}
+//					} else {
+//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
+//								"Error", JOptionPane.ERROR_MESSAGE);
+//					}
+
+					//					if(comboBoxItemCategory.getSelectedItem().equals("Other")) {
+					//						other.addLast(newItem);
+					//
+					//						if (other.size() == 1)
+					//							if (!textAreaShoppingList.getText().equals("")) {
+					//								newLine = "\n";
+					//
+					//								otherS = newLine + "Other" + newItem.toString();
+					//							}
+					//							else 
+					//								otherS += newItem.toString();
+					//					}
+
+					textAreaShoppingList.setText(foodS + drinksS + hygieneS); //+ otherS
+
 					textFieldNewItem.setText("");
 					textFieldQuantity.setText("");
 					
+					system.addToList(newItem); // metoda iz SHOPen-a , update shopping liste
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -391,79 +452,69 @@ public class MainWindowGUI extends JFrame {
 	}
 
 	public void save() {
-		int option = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your shopping list?",
-				"Save", JOptionPane.YES_NO_CANCEL_OPTION);
-		if(option == JOptionPane.YES_OPTION) {
-			try {
-				ObjectOutputStream out = new ObjectOutputStream(
-						new BufferedOutputStream(new FileOutputStream("data/shoppinglist.out")));
-				out.writeObject(food);
-				out.writeObject(drinks);
-				out.writeObject(hygiene);
-				out.writeObject(other);
-				out.close();
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(contentPane, "Error: " + e.getMessage(),
-						"Error", JOptionPane.ERROR_MESSAGE);
+		/*
+		 * ako nije prazan text area pita nas da li zelimo da sacuvamo listu, ako izaberemo yes serijalizuju se uneti objekti
+		 * u fajl shoppinglist.out i prikazuje se gde je sacuvano 
+		 */
+		if(!textAreaShoppingList.getText().isEmpty()) {
+			int option = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your shopping list?",
+					"Save", JOptionPane.YES_NO_CANCEL_OPTION);
+			if(option == JOptionPane.YES_OPTION) {
+				try {
+					ObjectOutputStream out = new ObjectOutputStream(
+							new BufferedOutputStream(new FileOutputStream("files/shoppinglist.out")));
+
+					JFileChooser fc = new JFileChooser();
+					int opcija = fc.showSaveDialog(contentPane);
+
+					if (opcija == JFileChooser.APPROVE_OPTION) {
+						File f = fc.getSelectedFile();
+						textAreaShoppingList.append("\n" + f.getAbsolutePath());
+						system.saveFile(f.getAbsolutePath());
+					}					
+
+					out.writeObject(system.returnShoppingList());
+
+					out.close();
+
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(contentPane, "Error: " + e.getMessage(), 
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
+			/*
+			 * u suprotnom nas obavestava da moramo nesto da unesemo kako bismo sacuvali listu
+			 */
+		} else {
+			JOptionPane.showMessageDialog(contentPane, "Error: You have to add an item in order to save the list!",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	public static void closeApp() {
-		
+
 		int option = JOptionPane.showConfirmDialog(contentPane, "Do you really want to exit? REALLY?!",
 				"Exit", JOptionPane.YES_NO_CANCEL_OPTION);
 		if(option == JOptionPane.YES_OPTION) {
 			System.exit(0);
 		}
 	}
-	
-	public static LinkedList<Item> showFood() {
+
+	public static LinkedList<Item> returnFood() {
 		return food;
 	}
-	
-	public static LinkedList<Item> showDrinks() {
+
+	public static LinkedList<Item> returnDrinks() {
 		return drinks;
 	}
-	
-	public static LinkedList<Item> showHygiene() {
+
+	public static LinkedList<Item> returnHygiene() {
 		return hygiene;
 	}
-	
-	public static LinkedList<Item> showOther() {
-		return other;
-	}
-	
-//	JMenuItem mntmSave = new JMenuItem("Save");
-//	mntmSave.addActionListener(new ActionListener() {
-//		public void actionPerformed(ActionEvent o) {
-//			try {
-//				ObjectOutputStream out = new ObjectOutputStream(
-//						new BufferedOutputStream(new FileOutputStream("files/shoppinglist.out")));
-//
-//				JFileChooser fc = new JFileChooser();
-//				int opcija = fc.showSaveDialog(contentPane);
-//
-//				if (opcija == JFileChooser.APPROVE_OPTION) {
-//					File f = fc.getSelectedFile();
-////					textAreaShoppingList.append(f.getAbsolutePath());
-//					system.saveFile(f.getAbsolutePath());
-//				}					
-//				
-//				out.writeObject(shoppingList);
-//				out.close();
-//				
-//			} catch (IOException e) {
-//				JOptionPane.showMessageDialog(contentPane, e.getMessage(), 
-//						"Error", JOptionPane.ERROR_MESSAGE);
-//			}
-//
-//		}
-//	});
-//	mnFile.add(mntmSave);
-//
 
-//PREBACENO DUGME NA DNO
-	
-	
+	//	public static LinkedList<Item> showOther() {
+	//		return other;
+	//	}
+
+
 }
