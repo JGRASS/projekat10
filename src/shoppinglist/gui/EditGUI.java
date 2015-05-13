@@ -20,11 +20,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
+/**
+ * Represents a public class that edits shopping list.
+ * @author Sanja Zelenovic, Milena Djurdjic, Nevena Djuricic
+ * @version 1.0
+ */
 public class EditGUI extends JFrame {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldItem;
@@ -36,8 +39,19 @@ public class EditGUI extends JFrame {
 	
 	private SHOPenInterfejs system;
 	
+	/**
+	 * Additional parameter.
+	 */
 	int opt = 0;
+	
+	/**
+	 * Shows us if item is found in selected category.
+	 */
 	boolean found = false;
+	
+	/**
+	 * Shows us if all items are deleted from selected category.
+	 */
 	boolean allDeleted = false;
 
 	/**

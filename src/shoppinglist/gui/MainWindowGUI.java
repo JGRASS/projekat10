@@ -43,6 +43,11 @@ import java.io.ObjectOutputStream;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Represents a public class that makes a shopping list and leads you to other options of editing shopping list .
+ * @author Sanja Zelenovic, Milena Djurdjic, Nevena Djuricic
+ * @version 1.0
+ */
 @SuppressWarnings("serial")
 public class MainWindowGUI extends JFrame {
 
@@ -51,66 +56,152 @@ public class MainWindowGUI extends JFrame {
 	private JTextField textFieldQuantity;
 	private SHOPenInterfejs system;
 
+	/**
+	 * List of items in food category.
+	 */
 	private static LinkedList<Item> food = new LinkedList<Item>();
+	
+	/**
+	 * List of items in drinks category.
+	 */
 	private static LinkedList<Item> drinks = new LinkedList<Item>();
+	
+	/**
+	 * List of items in hygiene category.
+	 */
 	private static LinkedList<Item> hygiene = new LinkedList<Item>();
+	
+	/**
+	 * List of items in other category.
+	 */
 	//	private static LinkedList<Item> other = new LinkedList<Item>();
 
+	/**
+	 * Additional String made of food category items. 
+	 */
 	static String foodS = "";
+	
+	/**
+	 * Additional String made of drinks category items. 
+	 */
 	static String drinksS = "";
+	
+	/**
+	 * Additional String made of hygiene category items. 
+	 */
 	static String hygieneS = "";
+	
+	/**
+	 * Additional String made of other category items. 
+	 */
 	//	static String otherS = "";
 	
+	/**
+	 * Text area of current shopping list.
+	 */
 	final static JTextArea textAreaShoppingList = new JTextArea();
 
+	/**
+	 * Method sets area of current shopping list to String from textArea.
+	 * @param textArea
+	 */
 	public static void setTextAreaShoppingList(String textArea) {
 		textAreaShoppingList.setText(textArea);
 	}
 
+	/**
+	 * Method sets category food inside shopping list to food list
+	 * @param food list as a Linked list
+	 */
 	public static void setFood(LinkedList<Item> food) {
 		MainWindowGUI.food = food;
 	}
 
+	/**
+	 * Method sets category drinks inside shopping list to food list
+	 * @param drinks list as a Linked list
+	 */
 	public static void setDrinks(LinkedList<Item> drinks) {
 		MainWindowGUI.drinks = drinks;
 	}
 
+	/**
+	 * Method sets category hygiene inside shopping list to food list
+	 * @param hygiene list as a Linked list
+	 */
 	public static void setHygiene(LinkedList<Item> hygiene) {
 		MainWindowGUI.hygiene = hygiene;
 	}
 	
+	/**
+	 * Method sets category other inside shopping list to food list
+	 * @param other list as a Linked list
+	 */
 	//	public static void setOther(LinkedList<Item> other) {
 	//		MainWindowGUI.other = other;
 	//	}
 
+	/**
+	 * Method that returns list of items in food category as a String.
+	 * @return food items as a String
+	 */
 	public static String getFoodS() {
 		return foodS;
 	}
 	
+	
+	/**
+	 * Method sets String foodS to entered list of items
+	 * @param list of food items as String
+	 */
 	public static void setFoodS(String f) {
 		foodS = f;
 	}
 
+	/**
+	 * Method that returns list of items in drinks category as a String.
+	 * @return drinks items as a String
+	 */
 	public static String getDrinksS() {
 		return drinksS;
 	}
 
+	/**
+	 * Method sets String drinksS to entered list of items
+	 * @param list of drinks items as String
+	 */
 	public static void setDrinksS(String d) {
 		drinksS = d;
 	}
 
+	/**
+	 * Method that returns list of items in hygiene category as a String.
+	 * @return hygiene items as a String
+	 */
 	public static String getHygieneS() {
 		return hygieneS;
 	}
 
+	/**
+	 * Method sets String hygieneS to entered list of items
+	 * @param list of hygiene items as String
+	 */
 	public static void setHygieneS(String h) {
 		hygieneS = h;
 	}
 
+	/**
+	 * Method that returns list of items in other category as a String.
+	 * @return other items as a String
+	 */
 	//	public static String getOtherS() {
 	//		return otherS;
 	//	}
-	//
+	
+	/**
+	 * Method sets String otherS to entered list of items
+	 * @param list of other items as String
+	 */
 	//	public static void setOtherS(String o) {
 	//		otherS = o;
 	//	}
