@@ -1,0 +1,9 @@
+Food
+   - bread
+
+Drinks
+   - coca-cola (2)
+   - milk
+
+Hygiene
+   - shampoo

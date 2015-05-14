@@ -90,15 +90,21 @@ public class Item {
 			throw new RuntimeException("Morate uneti kolicinu!");
 		this.quantity = quantity;
 	}
-	
+	/**
+	 * Method that is called every time we write an object of Item class somewhere
+	 */
 	public String toString() {
-		if (!quantity.isEmpty()) {
-			String q = quantity;
-			return "\n   - " + itemName + " (" + q + ")";
+		if (quantity.isEmpty()) {
+			return "\n   - " + itemName;
 		}
-		return "\n   - " + itemName;
+		String q = quantity;
+		return "\n   - " + itemName + " (" + q + ")";
 	}
-	
+	/**
+	 * Method that checks if two objects are equal
+	 * @param some object we want to compare
+	 * @return true if objects are equal and false otherwise
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if(o instanceof Item) {

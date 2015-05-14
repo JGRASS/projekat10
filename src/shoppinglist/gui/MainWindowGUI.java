@@ -1,11 +1,8 @@
 package shoppinglist.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -25,9 +22,6 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 
 import shoppinglist.Item;
-import shoppinglist.SHOPen;
-import shoppinglist.SHOPenInterfejs;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
@@ -36,12 +30,20 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 import java.awt.Toolkit;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
+
+import javax.swing.JPopupMenu;
+
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Represents a public class that makes a shopping list and leads you to other options of editing shopping list .
@@ -51,66 +53,51 @@ import java.awt.event.WindowEvent;
 @SuppressWarnings("serial")
 public class MainWindowGUI extends JFrame {
 
-	private static JPanel contentPane;
-	private JTextField textFieldNewItem;
-	private JTextField textFieldQuantity;
-	private SHOPenInterfejs system;
+	/** The content pane. */
+	static JPanel contentPane;
+	
+	/** The text field new item. */
+	static JTextField textFieldNewItem;
+	
+	/** The text field quantity. */
+	static JTextField textFieldQuantity;
+	
+	/** The combo box item category. */
+	static JComboBox<String> comboBoxItemCategory = new JComboBox<String>();
 
-	/**
-	 * List of items in food category.
-	 */
+	/**List of items in food category.*/
 	private static LinkedList<Item> food = new LinkedList<Item>();
-	
-	/**
-	 * List of items in drinks category.
-	 */
-	private static LinkedList<Item> drinks = new LinkedList<Item>();
-	
-	/**
-	 * List of items in hygiene category.
-	 */
-	private static LinkedList<Item> hygiene = new LinkedList<Item>();
-	
-	/**
-	 * List of items in other category.
-	 */
-	//	private static LinkedList<Item> other = new LinkedList<Item>();
 
-	/**
-	 * Additional String made of food category items. 
-	 */
+	/**List of items in drinks category.*/
+	private static LinkedList<Item> drinks = new LinkedList<Item>();
+
+	/**List of items in hygiene category.*/
+	private static LinkedList<Item> hygiene = new LinkedList<Item>();
+
+	/**Additional String made of food category items. */
 	static String foodS = "";
-	
-	/**
-	 * Additional String made of drinks category items. 
-	 */
+
+	/**Additional String made of drinks category items.*/
 	static String drinksS = "";
-	
-	/**
-	 * Additional String made of hygiene category items. 
-	 */
+
+	/**Additional String made of hygiene category items.*/
 	static String hygieneS = "";
-	
-	/**
-	 * Additional String made of other category items. 
-	 */
-	//	static String otherS = "";
-	
-	/**
-	 * Text area of current shopping list.
-	 */
+
+	public static Object comboBoxCategory;
+
+	/**Text area of current shopping list.*/
 	final static JTextArea textAreaShoppingList = new JTextArea();
 
 	/**
 	 * Method sets area of current shopping list to String from textArea.
-	 * @param textArea
+	 * @param textArea the new text area shopping list
 	 */
 	public static void setTextAreaShoppingList(String textArea) {
 		textAreaShoppingList.setText(textArea);
 	}
 
 	/**
-	 * Method sets category food inside shopping list to food list
+	 * Method sets category food inside shopping list to food list.
 	 * @param food list as a Linked list
 	 */
 	public static void setFood(LinkedList<Item> food) {
@@ -118,7 +105,7 @@ public class MainWindowGUI extends JFrame {
 	}
 
 	/**
-	 * Method sets category drinks inside shopping list to food list
+	 * Method sets category drinks inside shopping list to food list.
 	 * @param drinks list as a Linked list
 	 */
 	public static void setDrinks(LinkedList<Item> drinks) {
@@ -126,20 +113,12 @@ public class MainWindowGUI extends JFrame {
 	}
 
 	/**
-	 * Method sets category hygiene inside shopping list to food list
+	 * Method sets category hygiene inside shopping list to food list.
 	 * @param hygiene list as a Linked list
 	 */
 	public static void setHygiene(LinkedList<Item> hygiene) {
 		MainWindowGUI.hygiene = hygiene;
 	}
-	
-	/**
-	 * Method sets category other inside shopping list to food list
-	 * @param other list as a Linked list
-	 */
-	//	public static void setOther(LinkedList<Item> other) {
-	//		MainWindowGUI.other = other;
-	//	}
 
 	/**
 	 * Method that returns list of items in food category as a String.
@@ -148,11 +127,10 @@ public class MainWindowGUI extends JFrame {
 	public static String getFoodS() {
 		return foodS;
 	}
-	
-	
+
 	/**
-	 * Method sets String foodS to entered list of items
-	 * @param list of food items as String
+	 * Method sets String foodS to entered list of items.
+	 * @param f the new food s
 	 */
 	public static void setFoodS(String f) {
 		foodS = f;
@@ -167,8 +145,8 @@ public class MainWindowGUI extends JFrame {
 	}
 
 	/**
-	 * Method sets String drinksS to entered list of items
-	 * @param list of drinks items as String
+	 * Method sets String drinksS to entered list of items.
+	 * @param d the new drinks s
 	 */
 	public static void setDrinksS(String d) {
 		drinksS = d;
@@ -183,43 +161,11 @@ public class MainWindowGUI extends JFrame {
 	}
 
 	/**
-	 * Method sets String hygieneS to entered list of items
-	 * @param list of hygiene items as String
+	 * Method sets String hygieneS to entered list of items.
+	 * @param h the new hygiene s
 	 */
 	public static void setHygieneS(String h) {
 		hygieneS = h;
-	}
-
-	/**
-	 * Method that returns list of items in other category as a String.
-	 * @return other items as a String
-	 */
-	//	public static String getOtherS() {
-	//		return otherS;
-	//	}
-	
-	/**
-	 * Method sets String otherS to entered list of items
-	 * @param list of other items as String
-	 */
-	//	public static void setOtherS(String o) {
-	//		otherS = o;
-	//	}
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindowGUI frame = new MainWindowGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 
 	/**
@@ -230,12 +176,12 @@ public class MainWindowGUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				closeApp();
+				GUIControler.closeApp();
 			}
 		});
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindowGUI.class.getResource("/icons/shopping-bag-definition.jpg")));
 		setTitle("SHOPen");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 450, 386);
 
 		setLocationRelativeTo(null);
@@ -246,74 +192,42 @@ public class MainWindowGUI extends JFrame {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
-		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.addActionListener(new ActionListener() {
+		JMenuItem mntmNewList = new JMenuItem("New list");
+		mntmNewList.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+		mntmNewList.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
+		mntmNewList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				/*
-				 * kada kliknemo na new pita nas da li da sacuvamo listu koju smo do sad pravili, ako izaberemo yes onda pokrece
-				 * metodu save, ako izaberemo no otvara se nova lista
-				 */
-				int opt = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your list before you open new?",
-						"Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
-				if(opt == JOptionPane.YES_OPTION) {
-					save();
-				}
-				/*
-				 * "otvara" se nova lista, odnosno brise se sve sto smo upisivali u liste ukoliko vec nisu bile prazne
-				 */
-				if(!food.isEmpty()){
-					food.remove();
-					foodS = "";
-				}
-				if(!drinks.isEmpty()) {
-					drinks.remove();
-					drinksS = "";
-				}
-				//				if(!other.isEmpty()) {
-				//					other.remove();
-				//					otherS = "";
-				//				}
-				if(!hygiene.isEmpty()) {
-					hygiene.remove();
-					hygieneS = "";
-				}
-
-				textAreaShoppingList.setText("");
-				if (!SHOPen.getShoppingList().isEmpty())
-					SHOPen.setShoppingList(null);
+				GUIControler.newList();
 			}
 		});
-		mnFile.add(mntmNew);
+		mnFile.add(mntmNewList);
 
 		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+		mntmOpen.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/File.gif")));
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-
-				JFileChooser jf = new JFileChooser();
-				int opcija = jf.showOpenDialog(contentPane);
-
-				if (opcija == JFileChooser.APPROVE_OPTION) {
-					File f = jf.getSelectedFile();
-					textAreaShoppingList.append("\n" + f.getAbsolutePath());
-					system.readFile(f.getAbsolutePath());
-				}
-				// dodati deserijalizaciju
+				GUIControler.openShowListWindow();
 			}
 		});
 		mnFile.add(mntmOpen);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+		mntmSave.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/FloppyDrive.gif")));
 		mntmSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				save();
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.openSaveWindow();
 			}
 		});
 		mnFile.add(mntmSave);
 
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mntmExit.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/javax/swing/plaf/metal/icons/ocean/close.gif")));
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				closeApp();
+				GUIControler.closeApp();
 			}
 		});
 		mnFile.add(mntmExit);
@@ -322,21 +236,16 @@ public class MainWindowGUI extends JFrame {
 		menuBar.add(mnOptions);
 
 		JMenuItem mntmEdit = new JMenuItem("Edit");
+		mntmEdit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
+		mntmEdit.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/ListView.gif")));
 		mnOptions.add(mntmEdit);
-
-		JMenuItem mntmCombine = new JMenuItem("Combine");
-		mnOptions.add(mntmCombine);
-
-		JMenuItem mntmTranferCategory = new JMenuItem("Tranfer category");
-		mnOptions.add(mntmTranferCategory);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 
-		JMenuItem mntmInstructions = new JMenuItem("Instructions");
-		mnHelp.add(mntmInstructions);
-
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
+		mntmAbout.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/javafx/scene/web/skin/FontColor_16x16_JFX.png")));
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
 				JOptionPane.showMessageDialog(contentPane,
@@ -357,7 +266,7 @@ public class MainWindowGUI extends JFrame {
 		panelNewItems.setMaximumSize(new Dimension(400, 32767));
 		panelNewItems.setPreferredSize(new Dimension(130, 10));
 		contentPane.add(panelNewItems, "cell 0 1,growx,aligny center");
-		panelNewItems.setLayout(new MigLayout("", "[86px,grow][]", "[14px][20px][14px][20px][14px][][][20px][][][]"));
+		panelNewItems.setLayout(new MigLayout("", "[86px,grow][]", "[14px][20px][14px][20px][14px][][][20px][][][][][]"));
 
 		JLabel lblNewItem = new JLabel("New item");
 		panelNewItems.add(lblNewItem, "cell 0 2 2 1,alignx left,aligny center");
@@ -368,11 +277,9 @@ public class MainWindowGUI extends JFrame {
 		panelNewItems.add(textFieldNewItem, "cell 0 3 2 1,growx,aligny center");
 
 		JLabel lblItemCategory = new JLabel("Item category");
-		panelNewItems.add(lblItemCategory, "cell 0 4 2 1,alignx left,aligny center");
+		panelNewItems.add(lblItemCategory, "cell 0 4 2 1,alignx left,aligny center");		
 
-		final JComboBox comboBoxItemCategory = new JComboBox<>();
-
-		comboBoxItemCategory.setModel(new DefaultComboBoxModel(new String[] {"- select category -", "Food", "Drinks", "Hygiene", "Other"}));
+		comboBoxItemCategory.setModel(new DefaultComboBoxModel(new String[] {"- select category -", "Food", "Drinks", "Hygiene"}));
 		panelNewItems.add(comboBoxItemCategory, "cell 0 5 2 1,growx");
 
 		JLabel lblQuantity = new JLabel("Quantity");
@@ -384,6 +291,54 @@ public class MainWindowGUI extends JFrame {
 		textAreaShoppingList.setEditable(false);
 		scrollPaneShoppingList.setViewportView(textAreaShoppingList);
 
+		JPopupMenu popupMenu = new JPopupMenu();
+		addPopup(textAreaShoppingList, popupMenu);
+
+		JMenuItem mntmNewListPop = new JMenuItem("New list");
+		mntmNewListPop.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/Directory.gif")));
+		mntmNewListPop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.newList();
+			}
+		});
+		popupMenu.add(mntmNewListPop);
+
+		JMenuItem mntmOpenPop = new JMenuItem("Open");
+		mntmOpenPop.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/File.gif")));
+		mntmOpenPop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.openShowListWindow();
+			}
+		});
+		popupMenu.add(mntmOpenPop);
+
+		JMenuItem mntmSavePop = new JMenuItem("Save");
+		mntmSavePop.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/FloppyDrive.gif")));
+		mntmSavePop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.openSaveWindow();
+			}
+		});
+		popupMenu.add(mntmSavePop);
+
+		JMenuItem mntmEditPop = new JMenuItem("Edit");
+		mntmEditPop.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/ListView.gif")));
+		mntmEditPop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.openEditWindow();
+			}
+		});
+		popupMenu.add(mntmEditPop);
+
+		JMenuItem mntmExitPop = new JMenuItem("Exit");
+		mntmExitPop.setIcon(new ImageIcon(MainWindowGUI.class.getResource("/javax/swing/plaf/metal/icons/ocean/close.gif")));
+		mntmExitPop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent o) {
+				GUIControler.closeApp();
+			}
+		});
+		popupMenu.add(mntmExitPop);
+
 		JPanel panelButtons = new JPanel();
 		panelButtons.setMaximumSize(new Dimension(32767, 50));
 		contentPane.add(panelButtons, "cell 0 2 4 1,grow");
@@ -392,7 +347,7 @@ public class MainWindowGUI extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				save();
+				GUIControler.openSaveWindow();
 			}
 		});
 		panelButtons.add(btnSave);
@@ -400,13 +355,7 @@ public class MainWindowGUI extends JFrame {
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				if( !(textAreaShoppingList.getText().isEmpty()) ) {
-					new EditGUI().setVisible(true);
-				} else {
-					JOptionPane.showMessageDialog(contentPane, "Error: You have to add an item in order to change it!",
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
-
+				GUIControler.openEditWindow();
 			}
 		});
 		panelButtons.add(btnEdit);
@@ -414,7 +363,7 @@ public class MainWindowGUI extends JFrame {
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent o) {
-				closeApp();
+				GUIControler.closeApp();
 			}
 		});
 		panelButtons.add(btnExit);
@@ -422,117 +371,7 @@ public class MainWindowGUI extends JFrame {
 		JButton btnAddToList = new JButton("Add to list");
 		btnAddToList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if(comboBoxItemCategory.getSelectedItem().equals("- select category -")) {
-						JOptionPane.showMessageDialog(contentPane, "You have to select a category!",
-								"Error", JOptionPane.ERROR_MESSAGE);
-					}
-
-					// ucitavanje iz polja za unos
-					String item = textFieldNewItem.getText();
-					String category = comboBoxItemCategory.getSelectedItem().toString();
-					String quantity = textFieldQuantity.getText(); // ne moraju da ga unesu
-
-					// mora biti unet naziv novog itema
-					if (item.isEmpty()) {
-						JOptionPane.showMessageDialog(contentPane, "You have to name the item!",
-								"Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-
-					// pravljenje novog objekta Item
-					Item newItem = new Item();
-					newItem.setCategory(category);
-					newItem.setItemName(item);
-					newItem.setQuantity(quantity);
-
-					// unos u Shopping listu
-
-					String newLine = ""; 
-
-					/*
-					 * ako je jedini objekat u listi ovaj koji smo sad dodali onda to znaci da je lista pre bila prazna
-					 * pa nam treba da se ta nova lista pojavi u sledecem redu
-					 */
-					if(comboBoxItemCategory.getSelectedItem().equals("Drinks")) {
-//						if(!drinks.contains(newItem)) {
-							drinks.add(newItem);
-
-							if (drinks.size() == 1) {
-								if (!textAreaShoppingList.getText().equals("")) {
-									newLine = "\n";
-								}
-
-								drinksS =  newLine + "Drinks" + newItem.toString();
-							}
-							else
-								drinksS += newItem.toString();
-						}
-//					} else {
-//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
-//								"Error", JOptionPane.ERROR_MESSAGE);
-//					}
-
-					if(comboBoxItemCategory.getSelectedItem().equals("Food")) {
-//						if(!food.contains(newItem)) {
-							food.add(newItem);
-
-							if (food.size() == 1) {
-								if (!textAreaShoppingList.getText().equals("")){
-									newLine = "\n";
-								}
-
-								foodS = newLine + "Food" + newItem.toString();
-							} else
-								foodS += newItem.toString();
-						}
-//					} else {
-//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
-//								"Error", JOptionPane.ERROR_MESSAGE);
-//					}
-
-
-					if(comboBoxItemCategory.getSelectedItem().equals("Hygiene")) {
-//						if(!hygiene.contains(newItem)) {
-							hygiene.add(newItem);
-
-							if (hygiene.size() == 1) {
-								if (!textAreaShoppingList.getText().equals("")) {
-									newLine = "\n";
-								}
-
-								hygieneS = newLine + "Hygiene" + newItem.toString();
-							}
-							else
-								hygieneS += newItem.toString();
-						}
-//					} else {
-//						JOptionPane.showMessageDialog(contentPane, "Error! The item is already in the list!", 
-//								"Error", JOptionPane.ERROR_MESSAGE);
-//					}
-
-					//					if(comboBoxItemCategory.getSelectedItem().equals("Other")) {
-					//						other.addLast(newItem);
-					//
-					//						if (other.size() == 1)
-					//							if (!textAreaShoppingList.getText().equals("")) {
-					//								newLine = "\n";
-					//
-					//								otherS = newLine + "Other" + newItem.toString();
-					//							}
-					//							else 
-					//								otherS += newItem.toString();
-					//					}
-
-					textAreaShoppingList.setText(foodS + drinksS + hygieneS); //+ otherS
-
-					textFieldNewItem.setText("");
-					textFieldQuantity.setText("");
-					
-					system.addToList(newItem); // metoda iz SHOPen-a , update shopping liste
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				GUIControler.addToList();
 			}
 		});
 
@@ -542,70 +381,56 @@ public class MainWindowGUI extends JFrame {
 		panelNewItems.add(btnAddToList, "cell 0 9 2 1,growx,aligny bottom");
 	}
 
-	public void save() {
-		/*
-		 * ako nije prazan text area pita nas da li zelimo da sacuvamo listu, ako izaberemo yes serijalizuju se uneti objekti
-		 * u fajl shoppinglist.out i prikazuje se gde je sacuvano 
-		 */
-		if(!textAreaShoppingList.getText().isEmpty()) {
-			int option = JOptionPane.showConfirmDialog(contentPane, "Do you want to save your shopping list?",
-					"Save", JOptionPane.YES_NO_CANCEL_OPTION);
-			if(option == JOptionPane.YES_OPTION) {
-				try {
-					ObjectOutputStream out = new ObjectOutputStream(
-							new BufferedOutputStream(new FileOutputStream("files/shoppinglist.out")));
-
-					JFileChooser fc = new JFileChooser();
-					int opcija = fc.showSaveDialog(contentPane);
-
-					if (opcija == JFileChooser.APPROVE_OPTION) {
-						File f = fc.getSelectedFile();
-						textAreaShoppingList.append("\n" + f.getAbsolutePath());
-						system.saveFile(f.getAbsolutePath());
-					}					
-
-					out.writeObject(system.returnShoppingList());
-
-					out.close();
-
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(contentPane, "Error: " + e.getMessage(), 
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			/*
-			 * u suprotnom nas obavestava da moramo nesto da unesemo kako bismo sacuvali listu
-			 */
-		} else {
-			JOptionPane.showMessageDialog(contentPane, "Error: You have to add an item in order to save the list!",
-					"Error", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	public static void closeApp() {
-
-		int option = JOptionPane.showConfirmDialog(contentPane, "Do you really want to exit? REALLY?!",
-				"Exit", JOptionPane.YES_NO_CANCEL_OPTION);
-		if(option == JOptionPane.YES_OPTION) {
-			System.exit(0);
-		}
-	}
-
+	/**
+	 * Return food.
+	 *
+	 * @return list of added items, category food
+	 */
 	public static LinkedList<Item> returnFood() {
 		return food;
 	}
 
+	/**
+	 * Return drinks.
+	 *
+	 * @return list of added items, category drinks
+	 */
 	public static LinkedList<Item> returnDrinks() {
 		return drinks;
 	}
 
+	/**
+	 * Return hygiene.
+	 *
+	 * @return list of added items, category hygiene
+	 */
 	public static LinkedList<Item> returnHygiene() {
 		return hygiene;
 	}
-
-	//	public static LinkedList<Item> showOther() {
-	//		return other;
-	//	}
-
-
+	
+	/**
+	 * Adds the popup to textAreaShoppingList.
+	 *
+	 * @param component the component
+	 * @param popup the popup
+	 */
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+	}
+	
+	
 }
